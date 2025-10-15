@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const {v4: uuidv4, v4} = require('uuid')
 const app = express()
 const port = 3000
 
@@ -15,6 +16,7 @@ app.post('/transaction', (req, res) => {
 const body = req.body;
 console.log('body', body)
 const newTransaction = {
+        id: v4(),
         description: body.description,
         amount: body.amount
 
@@ -22,6 +24,11 @@ const newTransaction = {
   transactions.push(newTransaction)
   res.json(newTransaction)
 })
+
+app.get('/transaction', (req, res) => {
+  res.json(transactions)
+})
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

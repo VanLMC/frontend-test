@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 const API_URL = "http://localhost:3000"
@@ -21,10 +21,32 @@ console.log(response)
 }
 }
 
+async function fetchTransactions(setTransactions){
+  console.log('submit')
+try {
+  const response = await fetch(`${API_URL}/transaction`);
+  const json = await response.json()
+console.log(json)
+  setTransactions(json)
+  return json
+} catch (error) {
+  console.error(error)
+}
+}
 function App() {
 
   const [amount, setAmount] = useState(0)
   const [description, setDescription] = useState('')
+  const [transactions, setTransactions] = useState([])
+
+//   useEffect(() => {
+
+
+
+
+//  fetchTransactions()
+
+//   }, [])
   return (
     <>
 
@@ -38,18 +60,25 @@ function App() {
             <input name='amount' value={amount} type="number"  onChange={(e) => {
               setAmount(e.target.value)
             }} />
-            <button type='button' onClick={(e) => {
+            <button type='button' onClick={async (e) => {
         
               e.preventDefault()
               handleSave(description, amount)
-            
+               fetchTransactions(setTransactions)
             }}>Submit</button>
 
 
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      <div>
+            <h3>transactions</h3>
+            <ul>
+                {transactions.map((transaction) => <>
+                    <li key={transaction.id}>description: {transaction.description} amount: {transaction.amount}</li>
+                </>)}
+            </ul>
+      </div>
+
     </>
   )
 }
